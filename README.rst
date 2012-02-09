@@ -48,8 +48,9 @@ start at the root of an object that has the first level options mapped.
 
 This would be an example of how ``tampu`` would a dispatch of a subcommand::
 
-    tampu.mapper = { 'subcommand' : MySubcommandClass }
-    tampu.dispatch()
+    parser = tampu.Parse(args)
+    parser.mapper = { 'subcommand' : MySubcommandClass }
+    parser.dispatch()
 
 The dispatcher would call ``MySubcommandClass``  passing in all the arguments
 that came in initially to the constructor and would then call the
@@ -75,7 +76,8 @@ would in turn outpout that information when called::
 And then in the handler for your arguments you would set the ``catch_help``
 call::
 
-    tampu.catch_help()
+    # parser is an instance of the Parse class from ``tempu`` 
+    parser.catch_help()
 
 Which would make sure that when help is set on the command line it would output
 something like this::
