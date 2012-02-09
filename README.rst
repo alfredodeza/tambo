@@ -46,9 +46,9 @@ the incoming action *once*? Dealing with subcommands would not be up to
 a single object that gets constructed, but rather, to a chain of events that
 start at the root of an object that has the first level options mapped.
 
-This would be an example of how ``tampu`` would a dispatch of a subcommand::
+This would be an example of how ``tambo`` would a dispatch of a subcommand::
 
-    parser = tampu.Parse(args)
+    parser = tambo.Parse(args)
     parser.mapper = { 'subcommand' : MySubcommandClass }
     parser.dispatch()
 
@@ -58,13 +58,13 @@ that came in initially to the constructor and would then call the
 with the incoming arguments and options there.
 
 You can still handle options, boolean flags and anything however you want
-before hitting tampu to dispatch to subcommands, and you may use whatever
+before hitting tambo to dispatch to subcommands, and you may use whatever
 argument parser you want.
 
 Help generation
 ---------------
 A common problem for subcommands and command line tools that have these is
-generating help in a semi-automated way. ``tampu`` has a way to do this for
+generating help in a semi-automated way. ``tambo`` has a way to do this for
 subcommands that are mapped by calling the help property if there is one and
 would in turn outpout that information when called::
 
