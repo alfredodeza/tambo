@@ -98,7 +98,57 @@ Using ``tambo`` parsed args
 ---------------------------
 Although you can use whatever argument parser you want, ``tambo`` also comes
 with its own little engine that maps arguments in the command line to values,
-if you prefer using that, you will need to
+if you prefer using that, you will need to pass in a list (or tuple) that
+represents the flags and arguments that you expect::
+
+    from tambo import Parse
+
+    class MySubCommand(object):
+
+        def __init__(self, argv):
+            self.argv = argv
+            self.parser = Parse(['--verbose'])
+            self.parser.parse_args(self.argv)
+
+        def parse_args(self):
+            if self.parser.has('--verbose'):
+                my_program.verbose()
+
+The ``Parse`` object allows you to define all the flags and options you need as
+a tuple or a list so that they can be taken into account when mapping the
+values. If you want to define aliases, you can do so by grouping them in a list
+within the main list passed in to ``Parse``::
+
+    >>> from tambo import Parse
+    >>> options = [['-i', '--import'], '--verbose']
+    >>> parse = Parse(options)
+    >>> sys_argv = ['/bin/myapp', '-i', 'somevalue']
+    >>> parse.parse_args(sys_argv)
+    >>> parse.get('-i')
+    'somevalue'
+    >>> parse.get('--import')
+    'somevalue'
+
+So aliases work by grouping them together in a list, but what happens on
+boolean flags? You can check them by calling the ``has`` method::
+
+
+    >>> sys_argv = ['/bin/myapp', '--verbose']
+    >>> parse.parse_args(sys_argv)
+    >>> parse.has('-i')
+    False
+    >>> parse.has('--verbose')
+    True
+
+If you need to check for boolean flags in batch, you can pass in a list::
+
+    >>> sys_argv = ['/bin/myapp', '--verbose']
+    >>> parse.parse_args(sys_argv)
+    >>> parse.has('-i')
+    False
+    >>> parse.has(['-v', '--verbose'])
+    True
+
 
 
 Help generation
