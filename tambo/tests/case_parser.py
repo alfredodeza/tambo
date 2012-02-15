@@ -14,32 +14,32 @@ describe "parsing arguments":
 
     it "matches an option in arguments":
         parser = Parse(['--foo'])
-        parser.parse_args(['/bin/guaman', '--foo'])
+        parser.parse_args(['/bin/tambo', '--foo'])
         assert parser.args  == ['--foo']
 
 
     it "matches arguments with no values":
         parser = Parse(['--foo'])
-        parser.parse_args(['/bin/guaman', '--foo'])
+        parser.parse_args(['/bin/tambo', '--foo'])
         assert parser._arg_count['--foo'] == 0
         assert parser._count_arg[0]       == '--foo'
 
 
     it "matches arguments with values":
         parser = Parse(['--foo'])
-        parser.parse_args(['/bin/guaman', '--foo', 'BAR'])
+        parser.parse_args(['/bin/tambo', '--foo', 'BAR'])
         assert parser._arg_count['--foo'] == 0
         assert parser._count_arg[1]       == 'BAR'
 
 
     it "matches valid configured options only":
         parser = Parse(['--fuuu'])
-        parser.parse_args(['/bin/guaman', '--foo', '--meh'])
+        parser.parse_args(['/bin/tambo', '--foo', '--meh'])
 
 
     it "matches mixed values and arguments":
         parser = Parse(['--foo', '--bar'])
-        parser.parse_args(['/bin/guaman', '--foo', 'FOO', '--bar'])
+        parser.parse_args(['/bin/tambo', '--foo', 'FOO', '--bar'])
         assert parser._arg_count['--foo'] == 0
         assert parser._arg_count['--bar'] == 2
         assert parser._count_arg[1]       == 'FOO'
@@ -48,7 +48,7 @@ describe "parsing arguments":
 
     it "deals with lists of lists in options":
         parser = Parse(['--foo', ['--bar', 'bar']])
-        parser.parse_args(['/bin/guaman', '--bar'])
+        parser.parse_args(['/bin/tambo', '--bar'])
         assert parser._arg_count['--bar'] == 0
         assert parser.get('--bar') is None
 
@@ -59,7 +59,7 @@ describe "get values from arguments":
 
     before each:
         self.parser = Parse(['--foo'])
-        self.parser.parse_args(['/bin/guaman', '--foo', 'BAR', '--bar'])
+        self.parser.parse_args(['/bin/tambo', '--foo', 'BAR', '--bar'])
 
 
     it "returns a valid value from a matching argument":
@@ -80,7 +80,7 @@ describe "has or does not have options":
 
     before each:
         self.parser = Parse(['--foo'])
-        self.parser.parse_args(['/bin/guaman', '--foo', 'BAR', '--bar'])
+        self.parser.parse_args(['/bin/tambo', '--foo', 'BAR', '--bar'])
 
 
     it "accepts lists and returns if one matches":
