@@ -1,54 +1,180 @@
-import hashlib
-from guaman.parser import ParseLines
+import konira
+from cStringIO import StringIO
+from tambo import Parse
 
 
-describe "parsing csv lines":
+describe "parsing arguments":
+
+
+    it "removes the first item in the list always":
+        parser = Parse([])
+        parser.parse_args(['foo'])
+        assert parser.args == []
+
+
+    it "matches an option in arguments":
+        parser = Parse(['--foo'])
+        parser.parse_args(['/bin/guaman', '--foo'])
+        assert parser.args  == ['--foo']
+
+
+    it "matches arguments with no values":
+        parser = Parse(['--foo'])
+        parser.parse_args(['/bin/guaman', '--foo'])
+        assert parser._arg_count['--foo'] == 0
+        assert parser._count_arg[0]       == '--foo'
+
+
+    it "matches arguments with values":
+        parser = Parse(['--foo'])
+        parser.parse_args(['/bin/guaman', '--foo', 'BAR'])
+        assert parser._arg_count['--foo'] == 0
+        assert parser._count_arg[1]       == 'BAR'
+
+
+    it "matches valid configured options only":
+        parser = Parse(['--fuuu'])
+        parser.parse_args(['/bin/guaman', '--foo', '--meh'])
+
+
+    it "matches mixed values and arguments":
+        parser = Parse(['--foo', '--bar'])
+        parser.parse_args(['/bin/guaman', '--foo', 'FOO', '--bar'])
+        assert parser._arg_count['--foo'] == 0
+        assert parser._arg_count['--bar'] == 2
+        assert parser._count_arg[1]       == 'FOO'
+        assert parser._count_arg.get(3)   == None
+
+
+    it "deals with lists of lists in options":
+        parser = Parse(['--foo', ['--bar', 'bar']])
+        parser.parse_args(['/bin/guaman', '--bar'])
+        assert parser._arg_count['--bar'] == 0
+        assert parser.get('--bar') is None
+
+
+
+describe "get values from arguments":
+
 
     before each:
-        self.parser = ParseLines()
-        self.csv_rows = ['' for i in range(30)]
+        self.parser = Parse(['--foo'])
+        self.parser.parse_args(['/bin/guaman', '--foo', 'BAR', '--bar'])
 
-    it "returns none for empty queries":
-        result = self.parser.convert_single_line(self.csv_rows)
-        assert result is None
 
-    it "returns a dict with my query if found":
-        self.csv_rows[13] = "duration: 15.0 ms  statement: SELECT * FROM foo"
-        result = self.parser.convert_single_line(self.csv_rows)
-        query = 'select * from foo'
-        assert result != None
-        assert result[0] == hashlib.sha256(query).hexdigest()
-        assert result[1] == ''
-        assert result[2] == ''
-        assert result[3] == ''
-        assert result[4] == ''
-        assert result[5] == ''
-        assert result[6] == ''
-        assert result[7] == ''
-        assert result[8] == 15
-        assert result[9] == query
+    it "returns a valid value from a matching argument":
+        assert self.parser._get_value('--foo') == 'BAR'
 
-    it "returns the date if it matches the regex":
-        self.csv_rows[0] = '1999-22-01 11:11:11'
-        result = self.parser.get_timestamp(self.csv_rows)
-        assert result == '1999-22-01 11:11:11'
 
-    it "returns an empty string it the regex does not match":
-        result = self.parser.get_timestamp(self.csv_rows)
-        assert result == ''
+    it "returns None when an argument does not exist":
+        assert self.parser._get_value('--meh') == None
 
-    it "deals with statement and no durations":
-        self.csv_rows[13] = 'statement: SELECT * FROM bar'
-        result = self.parser.convert_single_line(self.csv_rows)
-        assert result != None
-        assert result[-1] == 'select * from bar'
-        assert result[-2] == 0
 
-    it "converts float durations to int":
-        self.csv_rows[13] = "duration: 15.44 ms"
-        result = self.parser.get_duration(self.csv_rows)
-        assert result == 15
+    it "returns None when an argument does not have a value":
+        assert self.parser._get_value('--bar') == None
 
-    it "returns zero when it cannot find a duration":
-        result = self.parser.get_duration(self.csv_rows)
-        assert result == 0
+
+
+describe "has or does not have options":
+
+
+    before each:
+        self.parser = Parse(['--foo'])
+        self.parser.parse_args(['/bin/guaman', '--foo', 'BAR', '--bar'])
+
+
+    it "accepts lists and returns if one matches":
+        opt = ['a', 'b', '--foo']
+        assert self.parser.has(opt) == True
+
+
+    it "returns none if cannot match from a list":
+        opt = ['a', 'b']
+        assert self.parser.has(opt) == False
+
+
+    it "deals with single items that match":
+        assert self.parser.has('--foo') == True
+
+
+    it "returns False when a single item does not match":
+        assert self.parser.has('--asdadfoo') == False
+
+
+
+describe "catches help":
+
+
+    before each:
+        self.parser = Parse(['--foo'])
+        self.parser.writer = StringIO()
+
+
+    it "does not catch help if catch_help is not defined":
+        self.parser.args = ['--help', '-h', 'help']
+        assert self.parser.catches_help() is None
+
+
+    it "does not catch version if version is not defined":
+        self.parser.args = ['--version', 'version']
+        assert self.parser.catches_version() is None
+
+
+    it "catches only help if it sees it as an argument":
+        self.parser.args = ['foo', 'bar']
+        self.parser.catch_help = 'this is the help menu'
+        assert self.parser.catches_help() == False
+
+
+    it "catches a single dash h":
+        self.parser.args = ['-h']
+        self.parser.catch_help = 'this is the help menu'
+
+        raises SystemExit: self.parser.catches_help()
+        assert self.parser.writer.getvalue() == 'this is the help menu\n'
+
+
+    it "catches double dash h":
+        self.parser.args = ['--h']
+        self.parser.catch_help = 'this is the help menu'
+
+        raises SystemExit: self.parser.catches_help()
+        assert self.parser.writer.getvalue() == 'this is the help menu\n'
+
+
+    it "catches double dash help":
+        self.parser.args = ['--help']
+        self.parser.catch_help = 'this is the help menu'
+
+        raises SystemExit: self.parser.catches_help()
+        assert self.parser.writer.getvalue() == 'this is the help menu\n'
+
+
+
+describe "catches version":
+
+
+    before each:
+        self.parser = Parse(['--foo'])
+        self.parser.writer = StringIO()
+
+
+    it "catches only version if it sees it as an argument":
+        self.parser.args = ['foo', 'bar']
+        self.parser.catch_version = "version 3"
+        assert self.parser.catches_version() == False
+
+
+    it "catches double dash version":
+        self.parser.args = ['foo', '--version']
+        self.parser.catch_version = "version 3"
+        raises SystemExit: self.parser.catches_version()
+        assert self.parser.writer.getvalue() == 'version 3\n'
+
+
+    it "catches version if it sees it as an argument":
+        self.parser.args = ['foo', 'version']
+        self.parser.catch_version = "version 3"
+        raises SystemExit: self.parser.catches_version()
+        assert self.parser.writer.getvalue() == 'version 3\n'
+
