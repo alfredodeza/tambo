@@ -49,7 +49,7 @@ start at the root of an object that has the first level options mapped.
 
 This would be an example of how ``tambo`` would a dispatch of a subcommand::
 
-    parser = tambo.Parse(args)
+    parser = tambo.Transport(args)
     parser.mapper = { 'subcommand' : MySubcommandClass }
     parser.dispatch()
 
@@ -57,6 +57,11 @@ The dispatcher would call ``MySubcommandClass``  passing in all the arguments
 that came in initially to the constructor and would then call the
 ``parse_args`` method so that your class can handle the logic of what to do
 with the incoming arguments and options there.
+
+The mapping dictionary can alternatively be passed in to the constructor::
+
+    parser = tambo.Transport(args, mapper = { 'subcommand' : MySubCommand })
+
 
 You can still handle options, boolean flags and anything you want
 before hitting ``tambo`` to dispatch to subcommands, and you may use whatever
