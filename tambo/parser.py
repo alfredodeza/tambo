@@ -15,17 +15,6 @@ class Parse(dict):
         self._count_arg    = {}
 
 
-    @property
-    def flat_options(self):
-        flat = []
-        for item in self.options:
-            if type(item) is list:
-                flat.extend(item)
-            else:
-                flat.append(item)
-        return flat
-
-
     def _build(self):
         for opt in self.options:
             if type(opt) == list:
@@ -54,9 +43,7 @@ class Parse(dict):
         self.catches_help()
         self.catches_version()
 
-        match = [i for i in argv if i in self.flat_options]
-
-        for count, argument in enumerate(match):
+        for count, argument in enumerate(self.args):
             self._arg_count[argument] = count
             self._count_arg[count]    = argument
 
