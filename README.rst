@@ -71,7 +71,7 @@ Command Line Class
 The command line class is what ``tambo`` would look forward when dispatching to
 subcommands. They need to follow a couple of constraints but will still allow
 to handle the command line arguments in whatever way you want with whatever
-library you want. 
+library you want.
 
 The most simple class you would need to have a valid dispatch call would look
 like this (following the example of the verbose flag from above)::
@@ -84,7 +84,7 @@ like this (following the example of the verbose flag from above)::
         def parse_args(self):
             if '--verbose' in self.argv:
                 my_program.verbose()
-         
+
 In ``tambo`` internals, the above class will get called when it matches the
 mapping defined in your root dictionary, and will receive the ``argv`` argument
 which is nothing else than the list of arguments (same as what you would expect
@@ -98,7 +98,7 @@ Using ``tambo`` parsed args
 ---------------------------
 Although you can use whatever argument parser you want, ``tambo`` also comes
 with its own little engine that maps arguments in the command line to values,
-if you prefer using that, you will need to 
+if you prefer using that, you will need to
 
 
 Help generation
@@ -116,7 +116,7 @@ would in turn outpout that information when called::
 And then in the handler for your arguments you would set the ``catch_help``
 call::
 
-    # parser is an instance of the Parse class from ``tambo`` 
+    # parser is an instance of the Parse class from ``tambo``
     parser.catch_help()
 
 Which would make sure that when help is set on the command line it would output
