@@ -1,49 +1,45 @@
 import konira
 from cStringIO import StringIO
-from guaman import argopts
+from tambo import Parse
 
 
 describe "parsing arguments":
 
 
     it "removes the first item in the list always":
-        parser = argopts.ArgOpts([])
+        parser = Parse([])
         parser.parse_args(['foo'])
         assert parser.args == []
 
 
     it "matches an option in arguments":
-        parser = argopts.ArgOpts(['--foo'])
+        parser = Parse(['--foo'])
         parser.parse_args(['/bin/guaman', '--foo'])
         assert parser.args  == ['--foo']
-        assert parser.match == ['--foo']
 
 
     it "matches arguments with no values":
-        parser = argopts.ArgOpts(['--foo'])
+        parser = Parse(['--foo'])
         parser.parse_args(['/bin/guaman', '--foo'])
         assert parser._arg_count['--foo'] == 0
         assert parser._count_arg[0]       == '--foo'
 
 
     it "matches arguments with values":
-        parser = argopts.ArgOpts(['--foo'])
+        parser = Parse(['--foo'])
         parser.parse_args(['/bin/guaman', '--foo', 'BAR'])
-        assert parser.match               == ['--foo']
         assert parser._arg_count['--foo'] == 0
         assert parser._count_arg[1]       == 'BAR'
 
 
     it "matches valid configured options only":
-        parser = argopts.ArgOpts(['--fuuu'])
+        parser = Parse(['--fuuu'])
         parser.parse_args(['/bin/guaman', '--foo', '--meh'])
-        assert parser.match == []
 
 
     it "matches mixed values and arguments":
-        parser = argopts.ArgOpts(['--foo', '--bar'])
+        parser = Parse(['--foo', '--bar'])
         parser.parse_args(['/bin/guaman', '--foo', 'FOO', '--bar'])
-        assert parser.match == ['--foo', '--bar']
         assert parser._arg_count['--foo'] == 0
         assert parser._arg_count['--bar'] == 2
         assert parser._count_arg[1]       == 'FOO'
@@ -51,9 +47,8 @@ describe "parsing arguments":
 
 
     it "deals with lists of lists in options":
-        parser = argopts.ArgOpts(['--foo', ['--bar', 'bar']])
+        parser = Parse(['--foo', ['--bar', 'bar']])
         parser.parse_args(['/bin/guaman', '--bar'])
-        assert parser.match == ['--bar']
         assert parser._arg_count['--bar'] == 0
         assert parser.get('--bar') is None
 
@@ -63,7 +58,7 @@ describe "get values from arguments":
 
 
     before each:
-        self.parser = argopts.ArgOpts(['--foo'])
+        self.parser = Parse(['--foo'])
         self.parser.parse_args(['/bin/guaman', '--foo', 'BAR', '--bar'])
 
 
@@ -84,7 +79,7 @@ describe "has or does not have options":
 
 
     before each:
-        self.parser = argopts.ArgOpts(['--foo'])
+        self.parser = Parse(['--foo'])
         self.parser.parse_args(['/bin/guaman', '--foo', 'BAR', '--bar'])
 
 
@@ -111,7 +106,7 @@ describe "catches help":
 
 
     before each:
-        self.parser = argopts.ArgOpts(['--foo'])
+        self.parser = Parse(['--foo'])
         self.parser.writer = StringIO()
 
 
@@ -160,7 +155,7 @@ describe "catches version":
 
 
     before each:
-        self.parser = argopts.ArgOpts(['--foo'])
+        self.parser = Parse(['--foo'])
         self.parser.writer = StringIO()
 
 
