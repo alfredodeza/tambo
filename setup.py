@@ -14,6 +14,6 @@ setup(
     version          = '0.0.1',
     license          = "MIT",
     keywords         = "cli, command, command line, dispatcher, subcommands",
-    install_requires = ['konira>=0.3.0'],
+    install_requires = ['konira>=0.3.0', 'mock'],
     long_description = LONG_DESCRIPTION
 )
