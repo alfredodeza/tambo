@@ -37,7 +37,7 @@ class Parse(dict):
             value = self._get_value(opt)
             if value:
                 self[opt] = self._get_value(opt)
- 
+
 
 
     def _single_value_from_list(self, _list):
@@ -54,9 +54,9 @@ class Parse(dict):
         self.catches_help()
         self.catches_version()
 
-        self.match = [i for i in argv if i in self.flat_options]
+        match = [i for i in argv if i in self.flat_options]
 
-        for count, argument in enumerate(self.args):
+        for count, argument in enumerate(match):
             self._arg_count[argument] = count
             self._count_arg[count]    = argument
 

@@ -1,8 +1,9 @@
 
 Command Line Traversing Engine
 ==============================
-``tempu`` is a Python package that helps to automatically traverse a tree of
-command line options and subcommands.
+``tambo`` is a Python package that helps to automatically traverse a tree of
+command line options and subcommands dispatching them to mapped classes that
+can use any command line parser they want.
 
 Whenever a command line interface of a program grows beyond a few flags and
 options it becomes painful to manage all the different options and calls
@@ -31,7 +32,7 @@ like::
         my_program.verbose()
 
 Again, this is all *OK* if you have just a few flags and options, but if you
-have, say, 10 or 20 or those, or are combining some with subcommands, you get
+have, say, 10 or 20 of those, or are combining some with subcommands, you get
 highly convoluted methods or functions that are trying to deal with the high
 demand for object construction.
 
@@ -57,9 +58,48 @@ that came in initially to the constructor and would then call the
 ``parse_args`` method so that your class can handle the logic of what to do
 with the incoming arguments and options there.
 
-You can still handle options, boolean flags and anything however you want
-before hitting tambo to dispatch to subcommands, and you may use whatever
+You can still handle options, boolean flags and anything you want
+before hitting ``tambo`` to dispatch to subcommands, and you may use whatever
 argument parser you want.
+
+Lets put this abundantly clear:
+
+**You can use whatever argument parser you want**
+
+Command Line Class
+------------------
+The command line class is what ``tambo`` would look forward when dispatching to
+subcommands. They need to follow a couple of constraints but will still allow
+to handle the command line arguments in whatever way you want with whatever
+library you want. 
+
+The most simple class you would need to have a valid dispatch call would look
+like this (following the example of the verbose flag from above)::
+
+    class MySubCommand(object):
+
+        def __init__(self, argv):
+            self.argv = argv
+
+        def parse_args(self):
+            if '--verbose' in self.argv:
+                my_program.verbose()
+         
+In ``tambo`` internals, the above class will get called when it matches the
+mapping defined in your root dictionary, and will receive the ``argv`` argument
+which is nothing else than the list of arguments (same as what you would expect
+from ``sys.argv`` received on the command line.
+If we are following the examples from above, the call would've been like this
+on the CLI::
+
+    my_cli subcommand --verbose
+
+Using ``tambo`` parsed args
+---------------------------
+Although you can use whatever argument parser you want, ``tambo`` also comes
+with its own little engine that maps arguments in the command line to values,
+if you prefer using that, you will need to 
+
 
 Help generation
 ---------------
@@ -76,7 +116,7 @@ would in turn outpout that information when called::
 And then in the handler for your arguments you would set the ``catch_help``
 call::
 
-    # parser is an instance of the Parse class from ``tempu`` 
+    # parser is an instance of the Parse class from ``tambo`` 
     parser.catch_help()
 
 Which would make sure that when help is set on the command line it would output
@@ -88,3 +128,5 @@ something like this::
 
     subcommand          A sub-command that does some stuff
 
+This is again, entirely optional, as you can avoid making those calls to catch
+help by not defining them.
