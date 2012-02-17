@@ -24,6 +24,7 @@ setup(
     author_email     = 'alfredodeza [at] gmail.com',
     version          = '0.0.1',
     license          = "MIT",
+    zip_safe         = False,
     keywords         = "cli, command, command line, dispatcher, subcommands",
     install_requires = ['konira>=0.3.0', 'mock', 'tox'],
     long_description = LONG_DESCRIPTION,
