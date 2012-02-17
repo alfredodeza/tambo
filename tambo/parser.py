@@ -1,19 +1,25 @@
 import sys
 
-class Parse(dict):
+
+class BaseCommandline(dict):
+
+    help          = ['-h', '--h', '--help', 'help']
+    version       = ['--version', 'version']
+    catch_help    = None
+    catch_version = None
+    exit          = sys.exit
+    writer        = sys.stdout
+    _arg_count    = {}
+    _count_arg    = {}
 
 
-    def __init__(self, arguments, options=None):
+class Parse(BaseCommandline):
+
+
+    def __init__(self, arguments, mapper=None, options=None):
         self.arguments     = arguments[1:]
+        self.mapper        = mapper or {}
         self.options       = options or []
-        self.help          = ['-h', '--h', '--help', 'help']
-        self.version       = ['--version', 'version']
-        self.catch_help    = None
-        self.catch_version = None
-        self.exit          = sys.exit
-        self.writer        = sys.stdout
-        self._arg_count    = {}
-        self._count_arg    = {}
 
 
     def _build(self):
