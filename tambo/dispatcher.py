@@ -1,23 +1,20 @@
+from tambo import Parse
 
-
-class Transport(object):
+class Transport(Parse):
     """
-    This class recieves the ``sys.argv`` list and will call the dictionary
-    mappings when they match the subcommands.
+    This class inherits from the ``Parse`` object that provides the engine
+    to parse arguments from the command line, and it extends the functionality
+    to be able to dispatch on mapped objects to subcommands.
 
     :param arguments: Should be the *exact* list of arguments coming from ``sys.argv``
     :keyword mapper: A dictionary of mapped subcommands to classes
     """
 
 
-    def __init__(self, arguments, mapper=None):
-        self.arguments = arguments
-        self.mapper = mapper or {}
-
-
-    def dispatch(self):
-        mapper_keys = self.mapper.keys()
+    def dispatch(self, mapper=None):
+        mapper = mapper or {}
+        mapper_keys = mapper.keys()
         for arg in self.arguments:
             if arg in mapper_keys:
-                instance = self.mapper.get(arg)(self.arguments)
+                instance = mapper.get(arg)(self.arguments)
                 return instance.parse_args()
