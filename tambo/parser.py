@@ -3,8 +3,9 @@ import sys
 class Parse(dict):
 
 
-    def __init__(self, options):
-        self.options       = options
+    def __init__(self, arguments, options=None):
+        self.arguments     = arguments[1:]
+        self.options       = options or []
         self.help          = ['-h', '--h', '--help', 'help']
         self.version       = ['--version', 'version']
         self.catch_help    = None
@@ -36,14 +37,12 @@ class Parse(dict):
                 return v
 
 
-    def parse_args(self, argv):
-        self.args = argv[1:]
-
+    def parse_args(self):
         # Help and Version:
         self.catches_help()
         self.catches_version()
 
-        for count, argument in enumerate(self.args):
+        for count, argument in enumerate(self.arguments):
             self._arg_count[argument] = count
             self._count_arg[count]    = argument
 
@@ -73,7 +72,7 @@ class Parse(dict):
 
     def catches_help(self):
         if self.catch_help:
-            if [i for i in self.args if i in self.help]:
+            if [i for i in self.arguments if i in self.help]:
                 self.writer.write(self.catch_help+'\n')
                 self.exit()
             return False
@@ -81,7 +80,7 @@ class Parse(dict):
 
     def catches_version(self):
         if self.catch_version:
-            if [i for i in self.args if i in self.version]:
+            if [i for i in self.arguments if i in self.version]:
                 self.writer.write(self.catch_version+'\n')
                 self.exit()
             return False
