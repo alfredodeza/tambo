@@ -17,6 +17,7 @@ class Transport(Parse):
             if arg in mapper_keys:
                 instance = self.mapper.get(arg)(self.arguments)
                 return instance.parse_args()
+        self.parse_args()
 
 
     def subhelp(self):
