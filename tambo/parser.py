@@ -13,13 +13,41 @@ class BaseCommandline(dict):
     _count_arg    = {}
 
 
+    def catches_help(self):
+        if self.catch_help and self.check_help:
+            if [i for i in self.arguments if i in self.help]:
+                self.print_help()
+            return False
+
+
+    def print_help(self):
+        self.writer.write(self.catch_help+'\n')
+        self.exit()
+
+
+    def print_version(self):
+        self.writer.write(self.catch_version+'\n')
+        self.exit()
+
+
+    def catches_version(self):
+        if self.catch_version and self.check_version:
+            if [i for i in self.arguments if i in self.version]:
+                self.print_version()
+            return False
+
+
+
+
 class Parse(BaseCommandline):
 
 
-    def __init__(self, arguments, mapper=None, options=None):
+    def __init__(self, arguments, mapper=None, options=None, check_help=True, check_version=True):
         self.arguments     = arguments[1:]
         self.mapper        = mapper or {}
         self.options       = options or []
+        self.check_help    = check_help
+        self.check_version = check_version
 
 
     def _build(self):
@@ -75,19 +103,4 @@ class Parse(BaseCommandline):
             return True
         return False
 
-
-    def catches_help(self):
-        if self.catch_help:
-            if [i for i in self.arguments if i in self.help]:
-                self.writer.write(self.catch_help+'\n')
-                self.exit()
-            return False
-
-
-    def catches_version(self):
-        if self.catch_version:
-            if [i for i in self.arguments if i in self.version]:
-                self.writer.write(self.catch_version+'\n')
-                self.exit()
-            return False
 
