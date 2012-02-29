@@ -103,30 +103,31 @@ Using ``tambo`` parsed args
 ---------------------------
 Although you can use whatever argument parser you want, ``tambo`` also comes
 with its own little engine that maps arguments in the command line to values,
-if you prefer using that, you will need to pass in a list (or tuple) that
-represents the flags and arguments that you expect::
+that represents the flags and arguments that you expect::
 
-    from tambo import Parse
+    from tambo import Transport
 
     class MySubCommand(object):
 
         def __init__(self, argv):
             self.argv = argv
-            self.parser = Parse(['--verbose'])
-            self.parser.parse_args(self.argv)
+            self.parser = Transport(self.argv)
 
         def parse_args(self):
             if self.parser.has('--verbose'):
                 my_program.verbose()
 
-The ``Parse`` object allows you to define all the flags and options you need as
+In the above case ``--verbose`` wasn't expecting a value assigned so later we
+just verified it existed by calling ``has('--verbose')``.
+
+The ``Transport`` object allows you to define all the flags and options you need as
 a tuple or a list so that they can be taken into account when mapping the
 values. If you want to define aliases, you can do so by grouping them in a list
-within the main list passed in to ``Parse``::
+within the main list passed in to ``Transport``::
 
-    >>> from tambo import Parse
+    >>> from tambo import Transport
     >>> options = [['-i', '--import'], '--verbose']
-    >>> parse = Parse(options)
+    >>> parse = Transport(options)
     >>> sys_argv = ['/bin/myapp', '-i', 'somevalue']
     >>> parse.parse_args(sys_argv)
     >>> parse.get('-i')
@@ -168,11 +169,12 @@ would in turn outpout that information when called::
         help = 'A sub-command that does some stuff'
 
 
-And then in the handler for your arguments you would set the ``catch_help``
-call::
+And then in the handler for your arguments it will automaticall check for the
+presence of the help attribute to display it if needed::
 
-    # parser is an instance of the Parse class from ``tambo``
-    parser.catch_help()
+    # parser is an instance of the Transport class from ``tambo``
+    parser.parse_args()
+
 
 Which would make sure that when help is set on the command line it would output
 something like this::
@@ -184,4 +186,19 @@ something like this::
     subcommand          A sub-command that does some stuff
 
 This is again, entirely optional, as you can avoid making those calls to catch
-help by not defining them.
+help by telling the ``Transport`` class to avoid checking for it::
+
+    parser = Transport(sys.argv, check_help=False)
+
+If for some reason you wanted to force printing the help menu, for example when
+no options have been matched, you can also do that with ``print_help()``
+
+::
+
+    parser = Transport(sys.argv, check_help=False)
+
+    if parser.has('--verbose'):
+        my_program.verbose()
+    else:
+        parser.print_help()
+    
