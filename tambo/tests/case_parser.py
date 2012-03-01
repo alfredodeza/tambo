@@ -1,6 +1,10 @@
 import konira
-from cStringIO import StringIO
 from tambo import Parse
+import sys
+if sys.version < '3':
+    from cStringIO import StringIO
+else:
+    from io import StringIO
 
 
 describe "parsing arguments":

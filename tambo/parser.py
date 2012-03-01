@@ -102,5 +102,3 @@ class Parse(BaseCommandline):
         if opt in self._arg_count.keys():
             return True
         return False
-
-
