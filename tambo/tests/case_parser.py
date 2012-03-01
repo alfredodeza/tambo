@@ -8,8 +8,8 @@ describe "parsing arguments":
 
     it "removes the first item in the list always":
         parser = Parse([])
-        parser.parse_args(['foo'])
-        assert parser.args == []
+        parser.parse_args()
+        assert parser.arguments == []
 
 
     it "matches an option in arguments":
@@ -67,8 +67,8 @@ describe "get values from arguments":
 
 
     before each:
-        self.parser = Parse(['--foo'])
-        self.parser.parse_args(['/bin/tambo', '--foo', 'BAR', '--bar'])
+        self.parser = Parse(['/bin/tambo', '--foo', 'BAR', '--bar'])
+        self.parser.parse_args()
 
 
     it "returns a valid value from a matching argument":
@@ -88,8 +88,8 @@ describe "has or does not have options":
 
 
     before each:
-        self.parser = Parse(['--foo'])
-        self.parser.parse_args(['/bin/tambo', '--foo', 'BAR', '--bar'])
+        self.parser = Parse(['/bin/tambo', '--foo', 'BAR', '--bar'])
+        self.parser.parse_args()
 
 
     it "accepts lists and returns if one matches":
@@ -120,23 +120,24 @@ describe "catches help":
 
 
     it "does not catch help if catch_help is not defined":
-        self.parser.args = ['--help', '-h', 'help']
+        self.parser.arguments = ['--help', '-h', 'help']
         assert self.parser.catches_help() is None
 
 
     it "does not catch version if version is not defined":
-        self.parser.args = ['--version', 'version']
+        self.parser.arguments = ['--version', 'version']
         assert self.parser.catches_version() is None
 
 
     it "catches only help if it sees it as an argument":
-        self.parser.args = ['foo', 'bar']
+        self.parser.arguments = ['foo', 'bar']
         self.parser.catch_help = 'this is the help menu'
         assert self.parser.catches_help() == False
 
 
     it "catches a single dash h":
-        self.parser.args = ['-h']
+        self.parser.arguments = ['-h']
+        assert self.parser.check_help is True
         self.parser.catch_help = 'this is the help menu'
 
         raises SystemExit: self.parser.catches_help()
@@ -144,7 +145,7 @@ describe "catches help":
 
 
     it "catches double dash h":
-        self.parser.args = ['--h']
+        self.parser.arguments = ['--h']
         self.parser.catch_help = 'this is the help menu'
 
         raises SystemExit: self.parser.catches_help()
@@ -152,7 +153,7 @@ describe "catches help":
 
 
     it "catches double dash help":
-        self.parser.args = ['--help']
+        self.parser.arguments = ['--help']
         self.parser.catch_help = 'this is the help menu'
 
         raises SystemExit: self.parser.catches_help()
@@ -164,25 +165,25 @@ describe "catches version":
 
 
     before each:
-        self.parser = Parse(['--foo'])
+        self.parser = Parse(['/usr/bin/foo', '--foo'])
         self.parser.writer = StringIO()
 
 
     it "catches only version if it sees it as an argument":
-        self.parser.args = ['foo', 'bar']
+        self.parser.arguments = ['foo', 'bar']
         self.parser.catch_version = "version 3"
         assert self.parser.catches_version() == False
 
 
     it "catches double dash version":
-        self.parser.args = ['foo', '--version']
+        self.parser.arguments = ['foo', '--version']
         self.parser.catch_version = "version 3"
         raises SystemExit: self.parser.catches_version()
         assert self.parser.writer.getvalue() == 'version 3\n'
 
 
     it "catches version if it sees it as an argument":
-        self.parser.args = ['foo', 'version']
+        self.parser.arguments = ['foo', 'version']
         self.parser.catch_version = "version 3"
         raises SystemExit: self.parser.catches_version()
         assert self.parser.writer.getvalue() == 'version 3\n'
