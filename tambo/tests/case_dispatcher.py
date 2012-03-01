@@ -22,4 +22,4 @@ describe "dispatching mapped classes":
         result = transport.dispatch()
 
         assert result == "Some string"
-        assert MyFoo.call_args[0][0] == ['/usr/bin/foo', 'foo']
+        assert MyFoo.call_args[0][0] == ['foo']
