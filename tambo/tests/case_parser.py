@@ -13,33 +13,41 @@ describe "parsing arguments":
 
 
     it "matches an option in arguments":
-        parser = Parse(['--foo'])
-        parser.parse_args(['/bin/tambo', '--foo'])
-        assert parser.args  == ['--foo']
+        parser = Parse(['/usr/bin/foo', '--foo'])
+        parser.options = ['--foo']
+        parser.parse_args()
+
+        assert parser == {} # No key/values
+        assert parser.has('--foo') # But it does exist
 
 
     it "matches arguments with no values":
-        parser = Parse(['--foo'])
-        parser.parse_args(['/bin/tambo', '--foo'])
-        assert parser._arg_count['--foo'] == 0
-        assert parser._count_arg[0]       == '--foo'
+        parser = Parse(['/usr/bin/foo', '--foo'])
+        parser.parse_args()
+        assert parser._arg_count    == {'--foo' : 0}
+        assert parser._count_arg[0] == '--foo'
 
 
     it "matches arguments with values":
-        parser = Parse(['--foo'])
-        parser.parse_args(['/bin/tambo', '--foo', 'BAR'])
+        parser = Parse(['/usr/bin/foo', '--foo', 'BAR'])
+        parser.parse_args()
         assert parser._arg_count['--foo'] == 0
         assert parser._count_arg[1]       == 'BAR'
 
 
     it "matches valid configured options only":
-        parser = Parse(['--fuuu'])
-        parser.parse_args(['/bin/tambo', '--foo', '--meh'])
+        parser = Parse(['/bin/tambo', '--foo', 'off', '--meh'])
+        parser.options = ['--foo']
+        parser.parse_args()
+        assert parser.has('--foo')
+        assert parser.has('--meh')
+        assert parser.get('--foo') == 'off'
+        assert parser.get('--meh') is None
 
 
     it "matches mixed values and arguments":
-        parser = Parse(['--foo', '--bar'])
-        parser.parse_args(['/bin/tambo', '--foo', 'FOO', '--bar'])
+        parser = Parse(['/bin/tambo', '--foo', 'FOO', '--bar'])
+        parser.parse_args()
         assert parser._arg_count['--foo'] == 0
         assert parser._arg_count['--bar'] == 2
         assert parser._count_arg[1]       == 'FOO'
@@ -47,8 +55,9 @@ describe "parsing arguments":
 
 
     it "deals with lists of lists in options":
-        parser = Parse(['--foo', ['--bar', 'bar']])
-        parser.parse_args(['/bin/tambo', '--bar'])
+        parser = Parse(['/bin/tambo', '--bar'])
+        parser.options = ['--foo', ['--bar', 'bar']]
+        parser.parse_args()
         assert parser._arg_count['--bar'] == 0
         assert parser.get('--bar') is None
 
