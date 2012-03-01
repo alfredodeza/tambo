@@ -9,8 +9,6 @@ class BaseCommandline(dict):
     catch_version = None
     exit          = sys.exit
     writer        = sys.stdout
-    _arg_count    = {}
-    _count_arg    = {}
 
 
     def catches_help(self):
@@ -48,6 +46,8 @@ class Parse(BaseCommandline):
         self.options       = options or []
         self.check_help    = check_help
         self.check_version = check_version
+        self._arg_count    = {}
+        self._count_arg    = {}
 
 
     def _build(self):
