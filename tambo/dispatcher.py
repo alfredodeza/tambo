@@ -39,5 +39,5 @@ class Transport(Parse):
                 help_text = value.help
             except AttributeError:
                 continue
-            help_text_lines.append("    %s \t\t %s" % (key, help_text))
+            help_text_lines.append("    %s \t\t %s\n" % (key, help_text))
         return help_text_lines
