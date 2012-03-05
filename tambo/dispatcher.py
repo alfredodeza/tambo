@@ -29,7 +29,7 @@ class Transport(Parse):
         help_text = self._get_all_help_text()
 
         if help_text:
-            return "Available subcommands:\n\n %s\n" % ''.join(help_text)
+            return "Available subcommands:\n\n%s\n" % ''.join(help_text)
         return ''
 
     def _get_all_help_text(self):
@@ -39,5 +39,5 @@ class Transport(Parse):
                 help_text = value.help
             except AttributeError:
                 continue
-            help_text_lines.append("    %s \t\t %s\n" % (key, help_text))
+            help_text_lines.append("%-24s %s\n" % (key, help_text))
         return help_text_lines
