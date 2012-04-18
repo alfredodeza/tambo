@@ -7,8 +7,6 @@ class BaseCommandline(dict):
     version       = ['--version', 'version']
     catch_help    = None
     catch_version = None
-    exit          = sys.exit
-    writer        = sys.stdout
 
 
     def catches_help(self):
@@ -48,6 +46,8 @@ class Parse(BaseCommandline):
         self.check_version = check_version
         self._arg_count    = {}
         self._count_arg    = {}
+        self.writer        = sys.stdout
+        self.exit          = sys.exit
 
 
     def _build(self):
