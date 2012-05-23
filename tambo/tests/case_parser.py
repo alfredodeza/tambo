@@ -125,18 +125,28 @@ describe "catches help":
 
     it "does not catch help if catch_help is not defined":
         self.parser.arguments = ['--help', '-h', 'help']
-        assert self.parser.catches_help() is None
+        assert self.parser.catches_help(force=False) is None
 
 
     it "does not catch version if version is not defined":
         self.parser.arguments = ['--version', 'version']
-        assert self.parser.catches_version() is None
+        assert self.parser.catches_version(force=False) is None
 
 
     it "catches only help if it sees it as an argument":
         self.parser.arguments = ['foo', 'bar']
         self.parser.catch_help = 'this is the help menu'
         assert self.parser.catches_help() == False
+
+
+    it "force catch version does nothing if not defined":
+        self.parser.arguments = ['foo', 'bar']
+        assert self.parser.catches_version() == None
+
+
+    it "force catch help does nothing if not defined":
+        self.parser.arguments = ['foo', 'bar']
+        assert self.parser.catches_help() == None
 
 
     it "catches a single dash h":
