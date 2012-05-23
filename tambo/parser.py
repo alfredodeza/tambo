@@ -3,16 +3,17 @@ import sys
 
 class BaseCommandline(dict):
 
-    help          = ['-h', '--h', '--help', 'help']
-    version       = ['--version', 'version']
-    catch_help    = None
-    catch_version = None
+    help          = ('-h', '--h', '--help', 'help')
+    version       = ('--version', 'version')
+    catch_help    = ''
+    catch_version = ''
 
 
-    def catches_help(self):
-        if self.catch_help and self.check_help:
-            if [i for i in self.arguments if i in self.help]:
-                self.print_help()
+    def catches_help(self, force=True):
+        if self.catch_help:
+            if self.check_help or force:
+                if [i for i in self.arguments if i in self.help]:
+                    self.print_help()
             return False
 
 
@@ -26,12 +27,12 @@ class BaseCommandline(dict):
         self.exit()
 
 
-    def catches_version(self):
-        if self.catch_version and self.check_version:
-            if [i for i in self.arguments if i in self.version]:
-                self.print_version()
+    def catches_version(self, force=True):
+        if self.catch_version:
+            if self.check_version or force:
+                if [i for i in self.arguments if i in self.version]:
+                    self.print_version()
             return False
-
 
 
 
@@ -73,8 +74,8 @@ class Parse(BaseCommandline):
 
     def parse_args(self):
         # Help and Version:
-        self.catches_help()
-        self.catches_version()
+        self.catches_help(force=False)
+        self.catches_version(force=False)
 
         for count, argument in enumerate(self.arguments):
             self._arg_count[argument] = count
