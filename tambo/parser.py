@@ -39,7 +39,8 @@ class BaseCommandline(dict):
 class Parse(BaseCommandline):
 
 
-    def __init__(self, arguments, mapper=None, options=None, check_help=True, check_version=True):
+    def __init__(self, arguments, mapper=None, options=None,
+                 check_help=True, check_version=True, writer=None):
         self.arguments     = arguments[1:]
         self.mapper        = mapper or {}
         self.options       = options or []
@@ -47,7 +48,7 @@ class Parse(BaseCommandline):
         self.check_version = check_version
         self._arg_count    = {}
         self._count_arg    = {}
-        self.writer        = sys.stdout
+        self.writer        = writer or sys.stdout
         self.exit          = sys.exit
 
 
