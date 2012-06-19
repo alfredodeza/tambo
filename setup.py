@@ -1,8 +1,12 @@
 import sys
 import os
+import re
 
 readme = os.path.join(os.path.dirname(__file__), 'README.rst')
 LONG_DESCRIPTION = open(readme).read()
+
+module_file = open("tambo/__init__.py").read()
+metadata = dict(re.findall("__([a-z]+)__\s*=\s*'([^']+)'", module_file))
 
 
 # Python3 needs this
@@ -22,7 +26,7 @@ setup(
     packages         = ['tambo'],
     author           = 'Alfredo Deza',
     author_email     = 'alfredodeza [at] gmail.com',
-    version          = '0.0.3',
+    version          = metadata['version'],
     license          = "MIT",
     zip_safe         = False,
     keywords         = "cli, command, command line, dispatcher, subcommands",
