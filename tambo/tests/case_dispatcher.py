@@ -1,3 +1,8 @@
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 from tambo import dispatcher
 from mock import Mock
 import konira
@@ -23,3 +28,9 @@ describe "dispatching mapped classes":
 
         assert result == "Some string"
         assert MyFoo.call_args[0][0] == ['foo']
+
+    it "complains about unkown commands":
+        fake_out = StringIO()
+        transport = dispatcher.Transport(['bin/foo', 'bar', 'boo'], writer=fake_out)
+        transport.dispatch()
+        assert fake_out.getvalue() == 'Unknown command(s): bar boo'
