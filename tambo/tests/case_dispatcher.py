@@ -33,4 +33,4 @@ describe "dispatching mapped classes":
         fake_out = StringIO()
         transport = dispatcher.Transport(['bin/foo', 'bar', 'boo'], writer=fake_out)
         transport.dispatch()
-        assert fake_out.getvalue() == 'Unknown command(s): bar boo'
+        assert fake_out.getvalue() == 'Unknown command(s): bar boo\n'

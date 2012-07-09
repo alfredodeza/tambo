@@ -18,7 +18,7 @@ class Transport(Parse):
                 instance = self.mapper.get(arg)(self.arguments)
                 return instance.parse_args()
         self.parse_args()
-        self.writer.write("Unknown command(s): %s" % ' '.join(self.arguments))
+        self.writer.write("Unknown command(s): %s\n" % ' '.join(self.arguments))
 
 
     def subhelp(self):
