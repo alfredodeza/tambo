@@ -1,4 +1,4 @@
-from tambo import Parse
+from tambo.parser import Parse
 
 class Transport(Parse):
     """
