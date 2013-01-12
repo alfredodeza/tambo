@@ -1,4 +1,3 @@
-import sys
 import os
 import re
 
@@ -9,16 +8,7 @@ module_file = open("tambo/__init__.py").read()
 metadata = dict(re.findall("__([a-z]+)__\s*=\s*'([^']+)'", module_file))
 
 
-# Python3 needs this
-if sys.version < '3':
-    from setuptools import setup
-    extra = dict()
-else:
-    import distribute_setup
-    distribute_setup.use_setuptools()
-    from setuptools import setup
-    extra = {'use_2to3':True}
-
+from setuptools import setup
 
 setup(
     name             = 'tambo',
@@ -43,10 +33,7 @@ setup(
                         'Programming Language :: Python :: 2.5',
                         'Programming Language :: Python :: 2.6',
                         'Programming Language :: Python :: 2.7',
-                        'Programming Language :: Python :: 3.0',
-                        'Programming Language :: Python :: 3.1',
-                        'Programming Language :: Python :: 3.2',
+                        'Programming Language :: Python :: 3.3',
                         'Programming Language :: Python :: Implementation :: PyPy'
                       ],
-    **extra
 )
