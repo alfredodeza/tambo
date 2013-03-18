@@ -44,6 +44,7 @@ class Parse(BaseCommandline):
         self._count_arg    = {}
         self.writer        = writer or sys.stdout
         self.exit          = sys.exit
+        self.unkown_commands = []
 
     def _build(self):
         extra_args = [i for i in self.arguments]
@@ -56,14 +57,11 @@ class Parse(BaseCommandline):
                         self._remove_item(value, extra_args)
                         self[v] = value
                 continue
-            # FIXME: We should slap a None on to it
-            # because this could be a flag
             value = self._get_value(opt)
             if value:
                 self._remove_item(value, extra_args)
                 self[opt] = self._get_value(opt)
             self._remove_item(opt, extra_args)
-            self[opt] = self._get_value(opt)
         self._remove_cli_helpers(extra_args)
         self.unkown_commands = extra_args
 
