@@ -8,7 +8,6 @@ class BaseCommandline(dict):
     catch_help    = ''
     catch_version = ''
 
-
     def catches_help(self, force=True):
         if self.catch_help:
             if self.check_help or force:
@@ -16,16 +15,13 @@ class BaseCommandline(dict):
                     self.print_help()
             return False
 
-
     def print_help(self):
         self.writer.write(self.catch_help+'\n')
         self.exit()
 
-
     def print_version(self):
         self.writer.write(self.catch_version+'\n')
         self.exit()
-
 
     def catches_version(self, force=True):
         if self.catch_version:
@@ -35,9 +31,7 @@ class BaseCommandline(dict):
             return False
 
 
-
 class Parse(BaseCommandline):
-
 
     def __init__(self, arguments, mapper=None, options=None,
                  check_help=True, check_version=True, writer=None):
@@ -51,27 +45,50 @@ class Parse(BaseCommandline):
         self.writer        = writer or sys.stdout
         self.exit          = sys.exit
 
-
     def _build(self):
+        extra_args = [i for i in self.arguments]
         for opt in self.options:
             if type(opt) == list:
                 value = self._single_value_from_list(opt)
                 if value:
                     for v in opt:
+                        self._remove_item(v, extra_args)
+                        self._remove_item(value, extra_args)
                         self[v] = value
                 continue
+            # FIXME: We should slap a None on to it
+            # because this could be a flag
             value = self._get_value(opt)
             if value:
+                self._remove_item(value, extra_args)
                 self[opt] = self._get_value(opt)
+            self._remove_item(opt, extra_args)
+            self[opt] = self._get_value(opt)
+        self._remove_cli_helpers(extra_args)
+        self.unkown_commands = extra_args
 
+    # FIXME We need to add these cli helper removal
+    def _remove_cli_helpers(self, _list):
+        if self.catch_help:
+            for arg in self.help:
+                self._remove_item(arg, _list)
+        if self.catch_version:
+            for arg in self.version:
+                self._remove_item(arg, _list)
 
+    # FIXME this remove item is a helper to
+    # prune extra_args
+    def _remove_item(self, item, _list):
+        for index, i in enumerate( _list):
+            if item == i:
+                _list.pop(index)
+        return _list
 
     def _single_value_from_list(self, _list):
         for value in _list:
             v = self._get_value(value)
             if v:
                 return v
-
 
     def parse_args(self):
         # Help and Version:
@@ -85,7 +102,6 @@ class Parse(BaseCommandline):
         # construct the dictionary
         self._build()
 
-
     def _get_value(self, opt):
         count = self._arg_count.get(opt)
         if count == None:
@@ -93,7 +109,6 @@ class Parse(BaseCommandline):
         value = self._count_arg.get(count+1)
 
         return value
-
 
     def has(self, opt):
         if type(opt) == list:
