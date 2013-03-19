@@ -10,7 +10,6 @@ class Transport(Parse):
     :keyword mapper: A dictionary of mapped subcommands to classes
     """
 
-
     def dispatch(self):
         mapper_keys = self.mapper.keys()
         for arg in self.arguments:
@@ -18,7 +17,8 @@ class Transport(Parse):
                 instance = self.mapper.get(arg)(self.arguments)
                 return instance.parse_args()
         self.parse_args()
-        self.writer.write("Unknown command(s): %s\n" % ' '.join(self.arguments))
+        if self.unkown_commands:
+            self.writer.write("Unknown command(s): %s\n" % ' '.join(self.unkown_commands))
 
 
     def subhelp(self):
