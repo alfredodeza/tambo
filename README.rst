@@ -12,7 +12,46 @@ can use any command line parser they want.
 
 Whenever a command line interface of a program grows beyond a few flags and
 options it becomes painful to manage all the different options and calls
-happenning on a single place.
+happening on a single place.
+
+`tambo`'s approach
+------------------
+What if we could **map** the command line options to objects and just deal with
+the incoming action *once*? Dealing with subcommands would not be up to
+a single object that gets constructed, but rather, to a chain of events that
+start at the root of an object that has the first level options mapped.
+
+This would be an example of how ``tambo`` would a dispatch of a subcommand::
+
+    parser = tambo.Transport(args)
+    parser.mapper = { 'subcommand' : MySubcommandClass }
+    parser.dispatch()
+
+The dispatcher would call ``MySubcommandClass``  passing in all the arguments
+that came in initially to the constructor and would then call the
+``parse_args`` method so that your class can handle the logic of what to do
+with the incoming arguments and options there.
+
+Do you need to add more commands? Just add them to this root mapper and they
+will be kept self contained. No need to declare *every* single option for all
+commands in one place. This is how it would look for a few more commands::
+
+    parser = tambo.Transport(args)
+    parser.mapper = {'subcommand': MySubcommandClass,
+                     'bar': BarClass,
+                     'foo': FooClass'}
+    parser.dispatch()
+
+
+You can still handle options, boolean flags and anything you want before
+hitting ``tambo`` to dispatch to subcommands, and again, you may use *whatever
+argument parser you want.*
+
+Lets put this abundantly clear:
+
+-------------------------------------------------
+**You can use whatever argument parser you want**
+-------------------------------------------------
 
 What is wrong with current approaches
 -------------------------------------
@@ -49,44 +88,6 @@ the time.
 If this was a web framework, it would be a highly inefficient one, wouldn't it?
 Executing all the code all the time when a request comes in?
 
-`tambo`'s approach
-------------------
-What if we could **map** the command line options to objects and just deal with
-the incoming action *once*? Dealing with subcommands would not be up to
-a single object that gets constructed, but rather, to a chain of events that
-start at the root of an object that has the first level options mapped.
-
-This would be an example of how ``tambo`` would a dispatch of a subcommand::
-
-    parser = tambo.Transport(args)
-    parser.mapper = { 'subcommand' : MySubcommandClass }
-    parser.dispatch()
-
-The dispatcher would call ``MySubcommandClass``  passing in all the arguments
-that came in initially to the constructor and would then call the
-``parse_args`` method so that your class can handle the logic of what to do
-with the incoming arguments and options there.
-
-Do you need to add more commands? Just add them to this root mapper and they
-will be kept self contained. No need to declare *every* single option for all
-commands in one place. This is how it would look for a few more commands::
-
-    parser = tambo.Transport(args)
-    parser.mapper = {'subcommand': MySubcommandClass,
-                     'bar': BarClass,
-                     'foo': FooClass'}
-    parser.dispatch()
-
-
-You can still handle options, boolean flags and anything you want
-before hitting ``tambo`` to dispatch to subcommands, and again, you may use *whatever
-argument parser you want.*
-
-Lets put this abundantly clear:
-
--------------------------------------------------
-**You can use whatever argument parser you want**
--------------------------------------------------
 
 Command Line Class
 ------------------
