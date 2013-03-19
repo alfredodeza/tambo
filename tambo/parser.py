@@ -65,7 +65,6 @@ class Parse(BaseCommandline):
         self._remove_cli_helpers(extra_args)
         self.unkown_commands = extra_args
 
-    # FIXME We need to add these cli helper removal
     def _remove_cli_helpers(self, _list):
         if self.catch_help:
             for arg in self.help:
@@ -74,10 +73,8 @@ class Parse(BaseCommandline):
             for arg in self.version:
                 self._remove_item(arg, _list)
 
-    # FIXME this remove item is a helper to
-    # prune extra_args
     def _remove_item(self, item, _list):
-        for index, i in enumerate( _list):
+        for index, i in enumerate(_list):
             if item == i:
                 _list.pop(index)
         return _list
