@@ -96,6 +96,45 @@ class Test_has_or_does_not_have_options(object):
         assert self.parser.has('--asdadfoo') == False
 
 
+class TestUnkownCommands(object):
+
+    def setup(self):
+        self.parser = Parse(['--foo'])
+        self.parser.writer = StringIO()
+
+    def test_catch_unkown_flag(self):
+        self.parser.arguments = ['--bar']
+        self.parser._build()
+        assert self.parser.unkown_commands == ['--bar']
+
+    def test_catch_unkown_flag_including_help(self):
+        args = ['--bar', '--help', '-h']
+        self.parser.arguments = args
+        self.parser._build()
+        assert self.parser.unkown_commands == args
+
+    def test_catch_unkown_flag_except_help(self):
+        args = ['--bar', '--help', '-h']
+        self.parser.catch_help = True
+        self.parser.arguments = args
+        self.parser._build()
+        assert self.parser.unkown_commands == ['--bar']
+
+    def test_catch_unkown_flag_including_version(self):
+        args = ['--bar', '--version']
+        self.parser.arguments = args
+        self.parser._build()
+        assert self.parser.unkown_commands == args
+
+    def test_catch_unkown_flag_except_version(self):
+        args = ['--bar', '--version']
+        self.parser.catch_version = True
+        self.parser.arguments = args
+        self.parser._build()
+        assert self.parser.unkown_commands == ['--bar']
+
+
+
 class Test_catches_help(object):
 
     def setup(self):
