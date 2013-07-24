@@ -49,7 +49,7 @@ class Parse(BaseCommandline):
     def _build(self):
         extra_args = [i for i in self.arguments]
         for opt in self.options:
-            if type(opt) == list:
+            if not isinstance(opt, basestring):
                 value = self._single_value_from_list(opt)
                 if value:
                     for v in opt:
@@ -106,7 +106,7 @@ class Parse(BaseCommandline):
         return value
 
     def has(self, opt):
-        if type(opt) == list:
+        if not isinstance(opt, basestring):
             for i in opt:
                 if i in self._arg_count.keys():
                     return True
