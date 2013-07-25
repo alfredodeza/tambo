@@ -58,6 +58,19 @@ class Test_parsing_arguments(object):
         assert parser._arg_count['--bar'] == 0
         assert parser.get('--bar') is None
 
+    def test_can_handle_a_tuple_as_options(self):
+        parser = Parse(['foo', '--bar', 'baz'])
+        parser.options = [('-b', '--bar')]
+        parser.parse_args()
+        assert parser.get('--bar') == 'baz'
+
+    def test_deals_with_a_tuple_of_tuples_in_options(self):
+        parser = Parse(['/bin/tambo', '--bar'])
+        parser.options = ('--foo', ('--bar', 'bar'))
+        parser.parse_args()
+        assert parser._arg_count['--bar'] == 0
+        assert parser.get('--bar') is None
+
 
 class Test_get_values_from_arguments(object):
 
