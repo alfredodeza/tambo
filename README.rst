@@ -180,7 +180,7 @@ Help generation
 A common problem for subcommands and command line tools that have these is
 generating help in a semi-automated way. ``tambo`` has a way to do this for
 subcommands that are mapped by calling the help property if there is one and
-would in turn outpout that information when called::
+would in turn output that information when called::
 
     class MySubcommandClass(object):
 
