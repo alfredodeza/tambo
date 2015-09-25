@@ -3,4 +3,4 @@ from .dispatcher import Transport
 
 __all__ = ['Parse', 'Transport']
 
-__version__ = '0.0.9'
+__version__ = '0.1.0'
