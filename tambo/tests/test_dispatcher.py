@@ -4,7 +4,15 @@ except ImportError:
     from io import StringIO
 
 from tambo import dispatcher
-from mock import Mock
+
+
+class MySubCommand(object):
+
+    def __init__(self, argv):
+        self.argv = argv
+
+    def parse_args(self):
+        return self.argv
 
 
 class Test_dispatching_mapped_classes(object):
@@ -19,14 +27,9 @@ class Test_dispatching_mapped_classes(object):
 
     def test_returns_parse_args_called_with_the_instance(self):
         transport = dispatcher.Transport(['/usr/bin/foo', 'foo'])
-        MyFoo = Mock()
-        MyFoo.parse_args = Mock(return_value="Some string")
-        MyFoo.return_value = MyFoo
-        transport.mapper = {'foo': MyFoo}
+        transport.mapper = {'foo': MySubCommand}
         result = transport.dispatch()
-
-        assert result == "Some string"
-        assert MyFoo.call_args[0][0] == ['foo']
+        assert result == ['foo']
 
     def test_complains_about_unknown_commands(self):
         fake_out = StringIO()
