@@ -28,7 +28,7 @@ class Test_dispatching_mapped_classes(object):
         assert result == "Some string"
         assert MyFoo.call_args[0][0] == ['foo']
 
-    def test_complains_about_unkown_commands(self):
+    def test_complains_about_unknown_commands(self):
         fake_out = StringIO()
         transport = dispatcher.Transport(['bin/foo', 'bar', 'boo'],
                                          writer=fake_out)

@@ -44,7 +44,7 @@ class Parse(BaseCommandline):
         self._count_arg    = {}
         self.writer        = writer or sys.stdout
         self.exit          = sys.exit
-        self.unkown_commands = []
+        self.unknown_commands = []
 
     def _build(self):
         extra_args = [i for i in self.arguments]
@@ -63,7 +63,7 @@ class Parse(BaseCommandline):
                 self[opt] = self._get_value(opt)
             self._remove_item(opt, extra_args)
         self._remove_cli_helpers(extra_args)
-        self.unkown_commands = extra_args
+        self.unknown_commands = extra_args
 
     def _remove_cli_helpers(self, _list):
         if self.catch_help:
