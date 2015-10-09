@@ -145,9 +145,9 @@ within the main list passed in to ``Transport``::
 
     >>> from tambo import Transport
     >>> options = [['-i', '--import'], '--verbose']
-    >>> parse = Transport(options)
     >>> sys_argv = ['/bin/myapp', '-i', 'somevalue']
-    >>> parse.parse_args(sys_argv)
+    >>> parse = Transport(sys_argv, options=options)
+    >>> parse.parse_args()
     >>> parse.get('-i')
     'somevalue'
     >>> parse.get('--import')
@@ -157,8 +157,11 @@ So aliases work by grouping them together in a list, but what happens on
 boolean flags? You can check them by calling the ``has`` method::
 
 
+    >>> from tambo import Transport
+    >>> options = [['-i', '--import'], '--verbose']
     >>> sys_argv = ['/bin/myapp', '--verbose']
-    >>> parse.parse_args(sys_argv)
+    >>> parse = Transport(sys_argv, options=options)
+    >>> parse.parse_args()
     >>> parse.has('-i')
     False
     >>> parse.has('--verbose')
@@ -166,8 +169,11 @@ boolean flags? You can check them by calling the ``has`` method::
 
 If you need to check for boolean flags in batch, you can pass in a list::
 
+    >>> from tambo import Transport
+    >>> options = [['-i', '--import'], '--verbose']
     >>> sys_argv = ['/bin/myapp', '--verbose']
-    >>> parse.parse_args(sys_argv)
+    >>> parse = Transport(sys_argv, options=options)
+    >>> parse.parse_args()
     >>> parse.has('-i')
     False
     >>> parse.has(['-v', '--verbose'])
