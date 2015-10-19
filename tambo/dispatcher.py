@@ -15,6 +15,10 @@ class Transport(Parse):
         for arg in self.arguments:
             if arg in mapper_keys:
                 instance = self.mapper.get(arg)(self.arguments)
+                # if the instance has a ``main`` defined, called that
+                # otherwise just use the old-way: ``parse_args``
+                if hasattr(instance, 'main'):
+                    return instance.main()
                 return instance.parse_args()
         self.parse_args()
         if self.unknown_commands:
