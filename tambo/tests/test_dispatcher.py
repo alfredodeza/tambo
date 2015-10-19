@@ -15,6 +15,18 @@ class MySubCommand(object):
         return self.argv
 
 
+class MyNewSubCommand(object):
+
+    def __init__(self, argv):
+        self.argv = argv
+
+    def main(self):
+        return self.argv
+
+    def parse_args(self):
+        raise RuntimeError('this method should not be called')
+
+
 class Test_dispatching_mapped_classes(object):
 
     def test_does_nothing_if_the_mapper_is_empty(self):
@@ -28,6 +40,12 @@ class Test_dispatching_mapped_classes(object):
     def test_returns_parse_args_called_with_the_instance(self):
         transport = dispatcher.Transport(['/usr/bin/foo', 'foo'])
         transport.mapper = {'foo': MySubCommand}
+        result = transport.dispatch()
+        assert result == ['foo']
+
+    def test_returns_parse_args_called_with_the_instance_with_main(self):
+        transport = dispatcher.Transport(['/usr/bin/foo', 'foo'])
+        transport.mapper = {'foo': MyNewSubCommand}
         result = transport.dispatch()
         assert result == ['foo']
 
