@@ -29,7 +29,7 @@ This would be an example of how ``tambo`` would a dispatch of a subcommand::
 
 The dispatcher would call ``MySubcommandClass``  passing in all the arguments
 that came in initially to the constructor and would then call the
-``parse_args`` method so that your class can handle the logic of what to do
+``main`` method so that your class can handle the logic of what to do
 with the incoming arguments and options there.
 
 Do you need to add more commands? Just add them to this root mapper and they
@@ -104,7 +104,7 @@ like this (following the example of the verbose flag from above)::
         def __init__(self, argv):
             self.argv = argv
 
-        def parse_args(self):
+        def main(self):
             if '--verbose' in self.argv:
                 my_program.verbose()
 
@@ -131,7 +131,7 @@ that represents the flags and arguments that you expect::
             self.argv = argv
             self.parser = Transport(self.argv)
 
-        def parse_args(self):
+        def main(self):
             if self.parser.has('--verbose'):
                 my_program.verbose()
 
