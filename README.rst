@@ -221,8 +221,8 @@ no options have been matched, you can also do that with ``print_help()``
 
     parser = Transport(sys.argv, check_help=False)
 
-    if parser.has('--verbose'):
-        my_program.verbose()
+    if parser.has('--mandatory-option'):
+        my_program.mandatory_thing()
     else:
         parser.print_help()
 
