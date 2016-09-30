@@ -39,7 +39,7 @@ commands in one place. This is how it would look for a few more commands::
     parser = tambo.Transport(args)
     parser.mapper = {'subcommand': MySubcommandClass,
                      'bar': BarClass,
-                     'foo': FooClass'}
+                     'foo': FooClass}
     parser.dispatch()
 
 
