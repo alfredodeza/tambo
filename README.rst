@@ -21,7 +21,9 @@ the incoming action *once*? Dealing with subcommands would not be up to
 a single object that gets constructed, but rather, to a chain of events that
 start at the root of an object that has the first level options mapped.
 
-This would be an example of how ``tambo`` would a dispatch of a subcommand::
+This would be an example of how ``tambo`` would a dispatch of a subcommand:
+
+.. code-block:: python
 
     parser = tambo.Transport(args)
     parser.mapper = { 'subcommand' : MySubcommandClass }
@@ -34,7 +36,9 @@ with the incoming arguments and options there.
 
 Do you need to add more commands? Just add them to this root mapper and they
 will be kept self contained. No need to declare *every* single option for all
-commands in one place. This is how it would look for a few more commands::
+commands in one place. This is how it would look for a few more commands:
+
+.. code-block:: python
 
     parser = tambo.Transport(args)
     parser.mapper = {'subcommand': MySubcommandClass,
@@ -62,7 +66,9 @@ construct the objects with the parameters when the interface is called.
 Not only it forces you to create them before hand, but it also forces one to
 make decisions based on what the parsed objects got. For example, if you have
 a ``--verbose`` flag you would first need to add it to the parsing object,
-something along the lines of ::
+something along the lines of:
+
+.. code-block:: python
 
     parser = ParserObject()
     options, arguments = parser.parse_args(args)
@@ -71,7 +77,9 @@ something along the lines of ::
     verbosity')
 
 And then to act upon whatever the parser object got, you would do something
-like::
+like:
+
+.. code-block:: python
 
     if parser.verbose:
         # do something about verbosity here
@@ -97,7 +105,9 @@ to handle the command line arguments in whatever way you want with whatever
 library you want.
 
 The most simple class you would need to have a valid dispatch call would look
-like this (following the example of the verbose flag from above)::
+like this (following the example of the verbose flag from above):
+
+.. code-block:: python
 
     class MySubCommand(object):
 
@@ -121,7 +131,9 @@ Using ``tambo`` parsed args
 ---------------------------
 Although you can use whatever argument parser you want, ``tambo`` also comes
 with its own little engine that maps arguments in the command line to values,
-that represents the flags and arguments that you expect::
+that represents the flags and arguments that you expect:
+
+.. code-block:: python
 
     from tambo import Transport
 
@@ -186,7 +198,9 @@ Help generation
 A common problem for subcommands and command line tools that have these is
 generating help in a semi-automated way. ``tambo`` has a way to do this for
 subcommands that are mapped by calling the help property if there is one and
-would in turn output that information when called::
+would in turn output that information when called:
+
+.. code-block:: python
 
     class MySubcommandClass(object):
 
@@ -194,7 +208,9 @@ would in turn output that information when called::
 
 
 And then in the handler for your arguments it will automaticall check for the
-presence of the help attribute to display it if needed::
+presence of the help attribute to display it if needed:
+
+.. code-block:: python
 
     # parser is an instance of the Transport class from ``tambo``
     parser.parse_args()
@@ -210,14 +226,16 @@ something like this::
     subcommand          A sub-command that does some stuff
 
 This is again, entirely optional, as you can avoid making those calls to catch
-help by telling the ``Transport`` class to avoid checking for it::
+help by telling the ``Transport`` class to avoid checking for it:
+
+.. code-block:: python
 
     parser = Transport(sys.argv, check_help=False)
 
 If for some reason you wanted to force printing the help menu, for example when
-no options have been matched, you can also do that with ``print_help()``
+no options have been matched, you can also do that with ``print_help()``:
 
-::
+.. code-block:: python
 
     parser = Transport(sys.argv, check_help=False)
 
