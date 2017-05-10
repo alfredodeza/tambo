@@ -100,6 +100,11 @@ class Parse(BaseCommandline):
     def _get_value(self, opt):
         count = self._arg_count.get(opt)
         if count == None:
+            # is it possible we got --option=value ?
+            flag_equals = "%s=" % opt
+            for argument in self.arguments:
+                if argument.startswith(flag_equals):
+                    return argument.split(flag_equals)[-1]
             return None
         value = self._count_arg.get(count+1)
 
