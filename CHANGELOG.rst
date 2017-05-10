@@ -1,3 +1,16 @@
+0.3.0
+-----
+Release Date: May 10th, 2017
+
+* Support ``--flag=value`` assignment when parsing
+
+0.2.0
+-----
+Release Date: October 19th, 2015
+
+* Allow to call ``main()`` when dispatching
+
+
 0.1.0
 -----
 Release Date: September 25th, 2015
