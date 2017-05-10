@@ -28,6 +28,11 @@ class Test_parsing_arguments(object):
         assert parser._arg_count    == {'--foo' : 0}
         assert parser._count_arg[0] == '--foo'
 
+    def test_matches_arguments_with_values_using_equal(self):
+        parser = Parse(['/usr/bin/foo', '--foo=BAR'], options=['--foo'])
+        parser.parse_args()
+        assert parser.get('--foo') == 'BAR'
+
     def test_matches_arguments_with_values(self):
         parser = Parse(['/usr/bin/foo', '--foo', 'BAR'])
         parser.parse_args()
