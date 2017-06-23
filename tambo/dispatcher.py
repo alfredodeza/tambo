@@ -10,7 +10,7 @@ class Transport(Parse):
     :keyword mapper: A dictionary of mapped subcommands to classes
     """
 
-    def dispatch(self):
+    def dispatch(self, with_exit=False):
         mapper_keys = self.mapper.keys()
         for arg in self.arguments:
             if arg in mapper_keys:
@@ -18,8 +18,16 @@ class Transport(Parse):
                 # if the instance has a ``main`` defined, called that
                 # otherwise just use the old-way: ``parse_args``
                 if hasattr(instance, 'main'):
-                    return instance.main()
-                return instance.parse_args()
+                    result = instance.main()
+                    if with_exit:
+                        raise SystemExit(0)
+                    else:
+                        return result
+                result = instance.parse_args()
+                if with_exit:
+                    raise SystemExit(0)
+                else:
+                    return result
         self.parse_args()
         if self.unknown_commands:
             self.writer.write("Unknown command(s): %s\n" % ' '.join(self.unknown_commands))
