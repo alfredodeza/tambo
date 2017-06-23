@@ -2,7 +2,7 @@ try:
     from StringIO import StringIO
 except ImportError:
     from io import StringIO
-
+from pytest import raises
 from tambo import dispatcher
 
 
@@ -40,8 +40,13 @@ class Test_dispatching_mapped_classes(object):
     def test_returns_parse_args_called_with_the_instance(self):
         transport = dispatcher.Transport(['/usr/bin/foo', 'foo'])
         transport.mapper = {'foo': MySubCommand}
-        result = transport.dispatch()
-        assert result == ['foo']
+        assert transport.dispatch() == ['foo']
+
+    def test_returns_parse_args_called_with_the_instance_with_exit(self):
+        transport = dispatcher.Transport(['/usr/bin/foo', 'foo'])
+        transport.mapper = {'foo': MySubCommand}
+        with raises(SystemExit) as err:
+            transport.dispatch(with_exit=True)
 
     def test_returns_parse_args_called_with_the_instance_with_main(self):
         transport = dispatcher.Transport(['/usr/bin/foo', 'foo'])
