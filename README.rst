@@ -46,6 +46,12 @@ commands in one place. This is how it would look for a few more commands:
                      'foo': FooClass}
     parser.dispatch()
 
+    j
+If the ``main`` dispatcher is doing other stuff after dispatching, like
+displaying help (useful when nothing is matched when dispatching) then
+a ``with_exit`` flag can be passed to get a ``SystemExit(0)`` be called::
+
+    parser.dispatch(with_exit=True)
 
 You can still handle options, boolean flags and anything you want before
 hitting ``tambo`` to dispatch to subcommands, and again, you may use *whatever
