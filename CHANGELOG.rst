@@ -1,3 +1,10 @@
+0.4.0
+-----
+Release Date: June 23th, 2017
+
+* Allow exiting early when dispatching
+
+
 0.3.0
 -----
 Release Date: May 10th, 2017
