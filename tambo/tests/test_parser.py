@@ -1,4 +1,4 @@
-from py.test import raises
+from pytest import raises
 from tambo import Parse
 import sys
 if sys.version < '3':
